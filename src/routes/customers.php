@@ -60,7 +60,6 @@ $app->put('/put/user/{id}', function(Request $request, Response $response){
     $password = $request->getParam('password');
     $role = $request->getParam('role');
 
-
     $sql = "UPDATE user SET 
                         lastname  = :lastname,
                         firstname = :firstname,
@@ -85,6 +84,7 @@ $app->put('/put/user/{id}', function(Request $request, Response $response){
         echo '{"notice": {"text": "User Updated"}';
         //$app->response->setStatus(200);
     } catch(PDOException $e){
+        $app->response->setStatus(404);
         echo '{"error": {"text": '.$e->getMessage().'}';
     }
 });

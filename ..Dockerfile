@@ -19,10 +19,10 @@ RUN service mysql start && mysql -uroot -proot -e "CREATE DATABASE rest_api"
 RUN apt-get update
 
 #RUN apt-get -qq -y install \
-#		   php5.6 \
-#		   php5.6-mysql \
-		   #libapache2-mod-php5 \
-#		   apache2
+#          php5.6 \
+#          php5.6-mysql \
+           #libapache2-mod-php5 \
+#          apache2
 
 
 #Config Apache
@@ -32,7 +32,7 @@ ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
 
 # Install deps
-ENV APP_HOME /var/www/app
+ENV APP_HOME /app
 ENV HOME /root
 RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
@@ -50,8 +50,8 @@ RUN service mysql start && mysql -uroot -proot rest_api < bdd.sql
 #OPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 #ADD supervisord.conf /etc/supervisord.conf
 
-COPY ./configs/apache2.conf ${APACHE_CONF_DIR}/apache2.conf
-COPY ./configs/app.conf ${APACHE_CONF_DIR}/sites-enabled/000-default.conf
+# COPY ./configs/apache2.conf ${APACHE_CONF_DIR}/apache2.conf
+# COPY ./configs/app.conf ${APACHE_CONF_DIR}/sites-enabled/000-default.conf
 
 #RUN mkdir -p /var/log/supervisor/
 #ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -61,8 +61,8 @@ COPY ./configs/app.conf ${APACHE_CONF_DIR}/sites-enabled/000-default.conf
 # Start server
 ENV PORT 3000
 EXPOSE 3000
-
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+CMD php -s 0.0.0.0:3000 -t /var/www/app/public/ /var/www/app/public/.htrouter.php 
+#CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
 # CMD ["./entrypoint.sh"]
 #CMD ["/usr/bin/supervisord"]
 #CMD ["/bin/bash", "-e", "/start.sh"]
